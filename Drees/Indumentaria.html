@@ -1,3 +1,51 @@
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script>
+async function cargarExcel() {
+    // URL RAW del archivo Excel en tu repositorio
+    const url = "https://raw.githubusercontent.com/coderhouse2025-droid/Tableros-Interactivos-/main/Drees/Dataset-indumentaria.xlsx";
+
+    const response = await fetch(url);
+    const data = await response.arrayBuffer();
+
+    const workbook = XLSX.read(data, { type: "array" });
+    const primeraHoja = workbook.SheetNames[0];
+    const hoja = workbook.Sheets[primeraHoja];
+
+    const json = XLSX.utils.sheet_to_json(hoja);
+
+    console.log("Datos cargados:", json);
+
+    renderTabla(json);
+}
+
+function renderTabla(datos) {
+    let html = "<table border='1'><tr>";
+
+    // Encabezados
+    Object.keys(datos[0]).forEach(col => {
+        html += `<th>${col}</th>`;
+    });
+    html += "</tr>";
+
+    // Filas
+    datos.forEach(row => {
+        html += "<tr>";
+        Object.values(row).forEach(val => {
+            html += `<td>${val}</td>`;
+        });
+        html += "</tr>";
+    });
+
+    html += "</table>";
+
+    document.getElementById("tabla").innerHTML = html;
+}
+
+cargarExcel();
+</script>
+
+<div id="tabla"></div>
 <!DOCTYPE html>
 <html lang="es">
 <head>
